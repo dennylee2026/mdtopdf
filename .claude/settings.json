@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const {appendFileSync,mkdirSync,existsSync}=require('fs');const d='logs';if(!existsSync(d))mkdirSync(d);const t=new Date().toISOString();appendFileSync(d+'/claude-actions.log','['+t+'] PostToolUse:Bash\\n');\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

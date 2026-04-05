@@ -1,0 +1,30 @@
+{
+  "name": "mdtopdf",
+  "version": "1.0.0",
+  "description": "Convert Markdown files to PDF with auto-logging",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "mdtopdf": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "convert": "node src/cli.js",
+    "prepare": "husky",
+    "lint:commit": "commitlint --from HEAD~1 --to HEAD --verbose"
+  },
+  "keywords": [
+    "markdown",
+    "pdf",
+    "converter"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "md-to-pdf": "^5.2.4"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "husky": "^9.0.0"
+  }
+}
