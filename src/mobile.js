@@ -1,5 +1,6 @@
-import { mdToPdf } from 'md-to-pdf';
-import { writeFileSync, appendFileSync, mkdirSync, existsSync } from 'fs';
+import puppeteer from 'puppeteer';
+import { marked } from 'marked';
+import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, basename, dirname } from 'path';
 
 const LOG_DIR = resolve(process.cwd(), 'logs');
@@ -12,23 +13,14 @@ const GOOGLE_YELLOW = '#FBBC05';
 const GOOGLE_GREEN  = '#34A853';
 
 const MOBILE_CSS = `
-/* ── Mobile canvas ── */
-@page {
-  margin: 0;
-  size: 390px auto;
-}
-
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.75;
   color: #1a1a1a;
-  max-width: 390px;
-  margin: 0 auto;
+  width: 390px;
   padding: 20px 18px 32px;
   word-break: break-word;
 }
@@ -40,24 +32,24 @@ h1 {
   border-left: 4px solid ${GOOGLE_BLUE};
   padding-left: 10px;
   margin-top: 1.4em;
+  margin-bottom: 0.4em;
 }
-
 h2 {
   font-size: 24px;
   color: ${GOOGLE_RED};
   border-left: 4px solid ${GOOGLE_RED};
   padding-left: 10px;
   margin-top: 1.3em;
+  margin-bottom: 0.4em;
 }
-
 h3 {
   font-size: 22px;
   color: ${GOOGLE_GREEN};
   border-left: 4px solid ${GOOGLE_GREEN};
   padding-left: 10px;
   margin-top: 1.2em;
+  margin-bottom: 0.3em;
 }
-
 h4 {
   font-size: 20px;
   background: ${GOOGLE_YELLOW};
@@ -66,18 +58,19 @@ h4 {
   padding: 0 6px 1px;
   border-radius: 3px;
   margin-top: 1.1em;
+  margin-bottom: 0.3em;
 }
-
 h5 {
   font-size: 18px;
   color: ${GOOGLE_BLUE};
   margin-top: 1em;
+  margin-bottom: 0.3em;
 }
-
 h6 {
   font-size: 17px;
   color: ${GOOGLE_RED};
   margin-top: 1em;
+  margin-bottom: 0.3em;
 }
 
 /* ── Bold — yellow highlight ── */
@@ -88,10 +81,7 @@ strong, b {
   font-weight: 700;
 }
 
-/* ── Body elements ── */
-p {
-  margin: 0.75em 0;
-}
+p { margin: 0.75em 0; }
 
 a {
   color: ${GOOGLE_BLUE};
@@ -122,12 +112,9 @@ pre {
   overflow-x: auto;
   font-size: 13px;
   line-height: 1.55;
+  margin: 1em 0;
 }
-
-pre code {
-  background: none;
-  padding: 0;
-}
+pre code { background: none; padding: 0; }
 
 table {
   width: 100%;
@@ -135,43 +122,24 @@ table {
   font-size: 14px;
   margin: 1em 0;
 }
-
 th {
   background: ${GOOGLE_BLUE};
   color: #fff;
   padding: 6px 8px;
   text-align: left;
 }
-
 td {
   border-bottom: 1px solid #e0e0e0;
   padding: 5px 8px;
 }
+tr:nth-child(even) td { background: #f8f9fa; }
 
-tr:nth-child(even) td {
-  background: #f8f9fa;
-}
+ul, ol { padding-left: 1.4em; margin: 0.6em 0; }
+li { margin: 0.3em 0; }
 
-ul, ol {
-  padding-left: 1.4em;
-  margin: 0.6em 0;
-}
+img { max-width: 100%; height: auto; border-radius: 6px; }
 
-li {
-  margin: 0.3em 0;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-}
-
-hr {
-  border: none;
-  border-top: 2px solid #e0e0e0;
-  margin: 1.5em 0;
-}
+hr { border: none; border-top: 2px solid #e0e0e0; margin: 1.5em 0; }
 `;
 
 function ensureLogDir() {
@@ -194,24 +162,38 @@ export async function convertMdToPdfMobile(inputPath, outputPath) {
 
   let logEntry;
   try {
-    const pdf = await mdToPdf(
-      { path: absInput },
-      {
-        stylesheet_encoding: 'utf8',
-        css: MOBILE_CSS,
-        pdf_options: {
-          format: undefined,
-          width: '390px',
-          printBackground: true,
-          margin: { top: 0, right: 0, bottom: 0, left: 0 },
-        },
-        launch_options: { args: ['--no-sandbox'] },
-      }
-    );
+    const md   = readFileSync(absInput, 'utf8');
+    const body = await marked(md);
+    const html = `<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<style>${MOBILE_CSS}</style>
+</head><body>${body}</body></html>`;
 
-    if (!pdf || !pdf.content) throw new Error('Conversion returned empty content');
+    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 390, height: 800, deviceScaleFactor: 2 });
+      await page.setContent(html, { waitUntil: 'networkidle0' });
 
-    writeFileSync(absOutput, pdf.content);
+      // Measure full content height — long-page, no pagination
+      const contentHeight = await page.evaluate(
+        () => document.documentElement.scrollHeight
+      );
+
+      const pdfBuffer = await page.pdf({
+        width:           '390px',
+        height:          `${contentHeight}px`,
+        printBackground: true,
+        margin:          { top: 0, right: 0, bottom: 0, left: 0 },
+        pageRanges:      '1',
+      });
+
+      writeFileSync(absOutput, pdfBuffer);
+    } finally {
+      await browser.close();
+    }
+
     logEntry = writeLog(`SUCCESS input="${absInput}" output="${absOutput}"`);
     return { success: true, output: absOutput, log: logEntry };
   } catch (err) {
