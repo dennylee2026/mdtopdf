@@ -4,7 +4,13 @@
       "Bash(npm install:*)",
       "Bash(npx husky:*)",
       "Bash(chmod +x:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git:*)",
+      "Bash(gh repo:*)",
+      "Bash(gh api:*)",
+      "Read(//Users/dongshuo/.claude/**)",
+      "Bash(npm link:*)",
+      "Bash(mdtopdf --help)"
     ]
   }
 }
