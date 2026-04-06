@@ -10,7 +10,9 @@
       "Bash(gh api:*)",
       "Read(//Users/dongshuo/.claude/**)",
       "Bash(npm link:*)",
-      "Bash(mdtopdf --help)"
+      "Bash(mdtopdf --help)",
+      "Bash(mdtopdf:*)",
+      "Bash(node -e \"import\\('puppeteer'\\).then\\(m => console.log\\('puppeteer ok', Object.keys\\(m\\)\\)\\).catch\\(e => console.log\\('err:', e.message\\)\\)\")"
     ]
   }
 }
