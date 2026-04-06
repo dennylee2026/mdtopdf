@@ -17,8 +17,8 @@ const MOBILE_CSS = `
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.75;
+  font-size: 18px;
+  line-height: 1.25;
   color: #1a1a1a;
   width: 390px;
   padding: 20px 18px 32px;
