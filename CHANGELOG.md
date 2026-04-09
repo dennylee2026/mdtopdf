@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Extracted shared logging logic into `src/logger.js` (`createLogger(tag)` factory); removed duplicated `writeLog`/`ensureLogDir` from `index.js`, `mobile.js`, `desktop.js`
+
 ## [1.3.1] - 2026-04-09
 
 ### Changed
