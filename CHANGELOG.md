@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-04-09
+
+### Changed
+- Desktop body line-height adjusted from 1.7 to 1.5
+
+## [1.3.0] - 2026-04-09
+
+### Added
+- Desktop A4 PDF output (`src/desktop.js`): paginated, 14 px body, 2.5 cm margins, Google-color headings
+- `--mobile` now simultaneously outputs both `<name>.mobile.pdf` and `<name>.desktop.pdf`
+- `--desktop` flag for desktop-only output
+
 ## [1.2.0] - 2026-04-06
 
 ### Changed
@@ -38,10 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conventional Commits enforced via husky commit-msg hook + commitlint
 - GitHub Actions CI: commitlint on PRs, build check on push
 - `main` branch protection requiring CI pass
-- `CLAUDE.md` and `.claudecode.md` project conventions
+- `CLAUDE.md` project conventions
 - Global CLI registration via `npm link`
 
-[Unreleased]: https://github.com/dennylee2026/mdtopdf/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/dennylee2026/mdtopdf/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/dennylee2026/mdtopdf/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/dennylee2026/mdtopdf/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/dennylee2026/mdtopdf/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/dennylee2026/mdtopdf/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/dennylee2026/mdtopdf/releases/tag/v1.0.0
