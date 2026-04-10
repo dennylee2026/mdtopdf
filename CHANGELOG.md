@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-04-09
+
+### Changed
+- Extracted shared logging logic into `src/logger.js` (`createLogger(tag)` factory); removed duplicated `writeLog`/`ensureLogDir` from `index.js`, `mobile.js`, `desktop.js`
+
 ## [1.3.1] - 2026-04-09
 
 ### Changed
@@ -53,7 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CLAUDE.md` project conventions
 - Global CLI registration via `npm link`
 
-[Unreleased]: https://github.com/dennylee2026/mdtopdf/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/dennylee2026/mdtopdf/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/dennylee2026/mdtopdf/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/dennylee2026/mdtopdf/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/dennylee2026/mdtopdf/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/dennylee2026/mdtopdf/compare/v1.1.0...v1.2.0

@@ -1,10 +1,8 @@
 import puppeteer from 'puppeteer';
 import { marked } from 'marked';
-import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { resolve, basename, dirname } from 'path';
-
-const LOG_DIR = resolve(process.cwd(), 'logs');
-const LOG_FILE = resolve(LOG_DIR, 'conversions.log');
+import { createLogger } from './logger.js';
 
 // Google product colors: Blue · Red · Yellow · Green
 const GOOGLE_BLUE   = '#4285F4';
@@ -142,17 +140,7 @@ img { max-width: 100%; height: auto; border-radius: 6px; }
 hr { border: none; border-top: 2px solid #e0e0e0; margin: 1.5em 0; }
 `;
 
-function ensureLogDir() {
-  if (!existsSync(LOG_DIR)) mkdirSync(LOG_DIR, { recursive: true });
-}
-
-function writeLog(entry) {
-  ensureLogDir();
-  const timestamp = new Date().toISOString();
-  const line = `[${timestamp}] [mobile] ${entry}\n`;
-  appendFileSync(LOG_FILE, line, 'utf8');
-  return line.trim();
-}
+const writeLog = createLogger('mobile');
 
 export async function convertMdToPdfMobile(inputPath, outputPath) {
   const absInput  = resolve(inputPath);

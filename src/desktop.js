@@ -1,9 +1,7 @@
 import { mdToPdf } from 'md-to-pdf';
-import { writeFileSync, appendFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync } from 'fs';
 import { resolve, basename, dirname } from 'path';
-
-const LOG_DIR = resolve(process.cwd(), 'logs');
-const LOG_FILE = resolve(LOG_DIR, 'conversions.log');
+import { createLogger } from './logger.js';
 
 const GOOGLE_BLUE   = '#4285F4';
 const GOOGLE_RED    = '#EA4335';
@@ -142,17 +140,7 @@ img { max-width: 100%; height: auto; border-radius: 4px; }
 hr { border: none; border-top: 2px solid #e0e0e0; margin: 1.5em 0; }
 `;
 
-function ensureLogDir() {
-  if (!existsSync(LOG_DIR)) mkdirSync(LOG_DIR, { recursive: true });
-}
-
-function writeLog(entry) {
-  ensureLogDir();
-  const timestamp = new Date().toISOString();
-  const line = `[${timestamp}] [desktop] ${entry}\n`;
-  appendFileSync(LOG_FILE, line, 'utf8');
-  return line.trim();
-}
+const writeLog = createLogger('desktop');
 
 export async function convertMdToPdfDesktop(inputPath, outputPath) {
   const absInput  = resolve(inputPath);
