@@ -1,6 +1,6 @@
 {
   "name": "mdtopdf",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Convert Markdown files to PDF with auto-logging",
   "type": "module",
   "main": "src/index.js",
